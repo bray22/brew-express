@@ -31,12 +31,3 @@ app.listen(PORT, () => {
 app.all('*', (req, res) => {
   res.status(404).send('Oops! The page you requested does not exist.');
 });
-
-const http = require('http');
-console.log('Server starting...');
-http.createServer((req, res) => {
-    console.log('Request received...');
-    res.end('Hello GCP dev!');
-}).listen(80, () => {
-    console.log('started.');
-});
