@@ -1,4 +1,4 @@
-import app from './something.mjs';
+import app from './index.mjs';
 
 require('greenlock-express')
     .init({
