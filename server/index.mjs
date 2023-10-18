@@ -10,25 +10,14 @@ const https_port = 443; // The default HTTPS port
 const PORT = process.env.PORT || 80;
 const app = express();
 
-  app.use((req, res, next) => {
-    if (req.hostname !== 'localhost') {
-      // Do something when the request is not from localhost
-      const privateKey = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/privkey.pem', 'utf8');
-      const certificate = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/fullchain.pem', 'utf8');
 
-      //const https = require('https');
-      const credentials = { key: privateKey, cert: certificate };
-      const httpsServer = https.createServer(credentials, app);
-      
-      httpsServer.listen(https_port, () => {
-        console.log(`Server is running on https://www.raystar.io:${https_port}`);
-      });
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/fullchain.pem', 'utf8');
 
-    } else {
-      // Do something when the request is from localhost
-    }
-    next(); // Don't forget to call next() to continue with the request
-  });
+const https = require('https');
+const credentials = { key: privateKey, cert: certificate };
+
+const httpsServer = https.createServer(credentials, app);
 
 
 // Middlewares
@@ -55,7 +44,7 @@ app.all('*', (req, res) => {
   res.status(404).send('Oops! The page you requested does not exist.');
 });
 
-
- 
-
+httpsServer.listen(https_port, () => {
+  console.log(`Server is running on https://www.raystar.io:${https_port}`);
+});
 
