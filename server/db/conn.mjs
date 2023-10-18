@@ -1,16 +1,24 @@
 import { MongoClient } from "mongodb";
+import mongoose from 'mongoose';
 
 const connectionString = process.env.ATLAS_URI || "";
 
-const client = new MongoClient(connectionString);
+mongoose.connect(connectionString, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
-let conn;
-try {
-  conn = await client.connect();
-} catch(e) {
-  console.error(e);
-}
+const db = mongoose.connection;
 
-let db = conn.db("alestars");
+// const client = new MongoClient(connectionString);
+
+// let conn;
+// try {
+//   conn = await client.connect();
+// } catch(e) {
+//   console.error(e);
+// }
+
+// let db = conn.db("alestars");
 
 export default db;

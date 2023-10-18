@@ -10,9 +10,6 @@ const https_port = 443; // The default HTTPS port
 const PORT = process.env.PORT || 80;
 const app = express();
 
-
-  
-
   app.use((req, res, next) => {
     if (req.hostname !== 'localhost') {
       // Do something when the request is not from localhost
@@ -26,7 +23,7 @@ const app = express();
       httpsServer.listen(https_port, () => {
         console.log(`Server is running on https://www.raystar.io:${https_port}`);
       });
-      
+
     } else {
       // Do something when the request is from localhost
     }

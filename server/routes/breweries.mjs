@@ -1,6 +1,7 @@
 import express from "express";
 import db from "../db/conn.mjs";
 import { ObjectId } from "mongodb";
+import Brewery from "../models/Brewery.mjs";
 
 const router = express.Router();
 
@@ -15,14 +16,21 @@ router.get("/", async (req, res) => {
 });
 
 // Fetches the latest posts
-router.get("/brewe", async (req, res) => {
-  let collection = await db.collection("breweries");
-  let results = await collection.aggregate([
-    {"$project": {"author": 1, "title": 1, "tags": 1, "date": 1}},
-    {"$sort": {"date": -1}},
-    {"$limit": 3}
-  ]).toArray();
-  res.send(results).status(200);
+router.get("/name/:name", async (req, res) => {
+  try {
+    const nameQuery = req.params.name; // The string to search for at the beginning
+
+    // Use a regular expression with the $regex operator to match names that start with nameQuery
+    const result = await Brewery.find({ Name: { $regex: new RegExp(`^${nameQuery}`) } });
+
+    if (result.length === 0) {
+      res.status(404).send("Not found");
+    } else {
+      res.status(200).json(result);
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Get a single post

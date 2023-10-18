@@ -1,49 +1,56 @@
 import express from "express";
 import db from "../db/conn.mjs";
 import { ObjectId } from "mongodb";
+import Beer from "../models/Beer.mjs";
+import Brewery from "../models/Brewery.mjs";
 
 const router = express.Router();
 
 // Get a list of 50 posts
 router.get("/", async (req, res) => {
-  let collection = await db.collection("beers");
-  let results = await collection.find({})
-    .limit(50)
-    .toArray();
-
-  res.send(results).status(200);
+  try {
+    const results = await Beer.find().populate('brewerId').limit(5);
+    res.status(200).send(results);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Get a single post
 router.get("/:id", async (req, res) => {
-  let collection = await db.collection("beers");
-  let query = {_id: ObjectId(req.params.id)};
-  let result = await collection.findOne(query);
-
-  if (!result) res.send("Not found").status(404);
-  else res.send(result).status(200);
+  try {
+    const result = await Beer.findById(req.params.id);
+    if (!result) {
+      res.status(404).send("Not found");
+    } else {
+      res.status(200).send(result);
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Add a new document to the collection
 router.post("/", async (req, res) => {
-  let collection = await db.collection("beers");
-  let newDocument = req.body;
-  newDocument.date = new Date();
-  let result = await collection.insertOne(newDocument);
-  res.send(result).status(204);
+  const newBeer = new Beer(req.body);
+  newBeer.date = new Date();
+
+  try {
+    const result = await newBeer.save();
+    res.status(201).send(result);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 });
 
-// Update the post with a new comment
-router.patch("/beers/:id", async (req, res) => {
-  const query = { _id: ObjectId(req.params.id) };
-  const updates = {
-    $push: { comments: req.body }
-  };
-
-  let collection = await db.collection("beers");
-  let result = await collection.updateOne(query, updates);
-
-  res.send(result).status(200);
+// Update the beer by ID
+router.patch("/:id", async (req, res) => {
+  try {
+    const result = await Beer.findByIdAndUpdate(req.params.id, { $push: { comments: req.body } });
+    res.status(200).send(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Delete an entry

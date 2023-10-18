@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
+import AutocompleteDropdown from '../components/AutocompleteDropdown';
+
+const server_name = 'http://localhost';
+//const server_name = 'https://www.raystar.io';
+
+
 interface BillingAddress {
   city: string;
   country: string;
@@ -12,8 +18,17 @@ interface Brewery {
   type: string;
 }
 
+interface Beers {
+  name: string;
+  BillingAddress: BillingAddress;
+  brewerId: Brewery;
+  type: string;
+}
+
 interface State {
   breweries: Brewery[];
+  selectBreweries: Brewery[];
+  beers: Beers[];
   error: {}
 }
 
@@ -22,12 +37,15 @@ class Home extends Component<{}, State> {
     super(props);
     this.state = {
       breweries: [],
+      selectBreweries: [],
+      beers: [],
       error: {}
     };
+    this.findBrewerByName = this.findBrewerByName.bind(this); 
   }
 
   componentDidMount() {
-    axios.get('http://localhost/breweries/')
+    axios.get(`${server_name}/breweries/`)
     //axios.get('https://www.raystar.io/breweries/')
       .then((response) => {
         this.setState({ breweries: response.data });
@@ -36,15 +54,46 @@ class Home extends Component<{}, State> {
         console.error('Error fetching brewery data: ', error);
         this.setState({ error: 'Error fetching data' });
       });
+
+    
+    axios.get(`${server_name}/beers/`)
+    //axios.get('https://www.raystar.io/breweries/')
+      .then((response) => {
+        this.setState({ beers: response.data });
+        console.log(response.data[0].brewerId);
+      })
+      .catch((error) => {
+        console.error('Error fetching brewery data: ', error);
+        this.setState({ error: 'Error fetching data' });
+      });
+  }
+
+  findBrewerByName(name="John") {
+    axios.get(`${server_name}/breweries/name/${name}`)
+      .then((response) => {
+        if (response.data && Array.isArray(response.data)) {
+        this.setState({ breweries: response?.data });
+      }
+        //console.log(response.data[0].Name);
+      })
+      .catch((error) => {
+        this.setState({ breweries: [] });
+       // console.error('Error fetching brewery data: ', error);
+        //this.setState({ error: 'Error fetching data' });
+    });
   }
 
   render() {
-    const { breweries } = this.state;
+    const { breweries, beers } = this.state;
+
+    Array.isArray(beers) && beers.map((beer, index) => (
+      {}
+    ))
 
     return (
       <>
         <div>
-          <h1>Brewery Table</h1>
+          <h1>CL Table</h1>
           <table>
             <thead>
               <tr>
@@ -54,11 +103,11 @@ class Home extends Component<{}, State> {
               </tr>
             </thead>
             <tbody>
-              {Array.isArray(breweries) && breweries.map((brewery, index) => (
+              {Array.isArray(beers) && beers.map((beer, index) => (
                 <tr key={index}>
-                  <td>{brewery.Name}</td>
-                  <td>{brewery.BillingAddress.city}</td>
-                  <td>{brewery.BillingAddress.country}</td>
+                  <td>{beer.name}</td>
+                  <td>{beer.brewerId.Name && beer.brewerId.Name}</td>
+                  <td><AutocompleteDropdown findBrewerByName={this.findBrewerByName} options={this.state.breweries} /></td>
                 </tr>
               ))}
             </tbody>

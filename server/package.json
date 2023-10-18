@@ -27,7 +27,8 @@
     "fs": "^0.0.1-security",
     "greenlock-express": "^4.0.3",
     "https": "^1.0.0",
-    "mongodb": "^4.13.0"
+    "mongodb": "^4.13.0",
+    "mongoose": "^7.6.3"
   },
   "devDependencies": {
     "eslint": "^8.0.0",
