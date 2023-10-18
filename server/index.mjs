@@ -5,7 +5,7 @@ import 'express-async-errors';
 import beers from './routes/beers.mjs';
 import breweries from './routes/breweries.mjs';
 
-const PORT = process.env.PORT || 80;
+const PORT = process.env.PORT || 5050;
 const app = express();
 
 // Middlewares
