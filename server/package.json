@@ -26,6 +26,7 @@
     "express-async-errors": "^3.1.1",
     "fs": "^0.0.1-security",
     "greenlock-express": "^4.0.3",
+    "https": "^1.0.0",
     "mongodb": "^4.13.0"
   },
   "devDependencies": {

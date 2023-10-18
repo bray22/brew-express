@@ -5,6 +5,7 @@ import 'express-async-errors';
 import beers from './routes/beers.mjs';
 import breweries from './routes/breweries.mjs';
 import fs from 'fs';
+import https from 'https';
 const https_port = 443; // The default HTTPS port
 const PORT = process.env.PORT || 80;
 const app = express();
@@ -13,7 +14,7 @@ const app = express();
 const privateKey = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/privkey.pem', 'utf8');
 const certificate = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/fullchain.pem', 'utf8');
 
-const https = require('https');
+//const https = require('https');
 const credentials = { key: privateKey, cert: certificate };
 
 const httpsServer = https.createServer(credentials, app);
