@@ -1,6 +1,6 @@
 'use strict';
 
-var app = require('./app.js');
+var app = require('./index.mjs');
 
 require('greenlock-express')
     .init({
