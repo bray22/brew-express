@@ -9,13 +9,20 @@ class AutocompleteDropdown extends Component {
   };
 
   handleChange = (selectedOption) => {
+    if (selectedOption) {
+    this.props.updateBrewer(selectedOption.value);
     this.setState({ selectedOption });
+    }
+
+    else {this.setState({ selectedOption: null });}
   };
 
   handleInputChange = (inputText) => {
-    this.props.findBrewerByName(inputText);
-    console.log(this.props.options);
-    this.setState({ dropdownOptions: this.props.options });
+    if (inputText) {
+      this.props.findBrewerByName(inputText)
+      this.setState({ dropdownOptions: this.props.options });
+    }
+    
   };
 
   render() {
@@ -37,8 +44,6 @@ class AutocompleteDropdown extends Component {
       option.value = item._id;
       return option
     }) : null;
-
-    console.log(options);
 
     return (
       <div>

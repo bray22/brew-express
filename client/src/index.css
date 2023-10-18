@@ -11,3 +11,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.beer-table {
+ padding: 40px;
+}
+
+.beer-table td {
+  padding: 0 10px 0 10px;
+ }

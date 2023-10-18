@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
   res.send(results).status(200);
 });
 
-// Fetches the latest posts
+// Fetches brewery by name
 router.get("/name/:name", async (req, res) => {
   try {
     const nameQuery = req.params.name; // The string to search for at the beginning

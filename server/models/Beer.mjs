@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 // Define the schema for the Beer model
 const beerSchema = new mongoose.Schema({
-  id: String,
+  _id: mongoose.Schema.Types.ObjectId,
   name: String,
   nameDisplay: String,
   abv: String,
