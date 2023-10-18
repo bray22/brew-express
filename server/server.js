@@ -1,6 +1,3 @@
-'use strict';
-
-//var app = require('./index.mjs');
 import app from './something.mjs';
 
 require('greenlock-express')
