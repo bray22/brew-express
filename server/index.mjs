@@ -32,4 +32,3 @@ app.all('*', (req, res) => {
   res.status(404).send('Oops! The page you requested does not exist.');
 });
 
-module.exports = app;
