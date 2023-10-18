@@ -4,11 +4,11 @@ import './loadEnvironment.mjs';
 import 'express-async-errors';
 import beers from './routes/beers.mjs';
 import breweries from './routes/breweries.mjs';
-
+import fs from 'fs';
 const https_port = 443; // The default HTTPS port
 const PORT = process.env.PORT || 80;
 const app = express();
-const fs = require('fs');
+
 
 const privateKey = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/privkey.pem', 'utf8');
 const certificate = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/fullchain.pem', 'utf8');
