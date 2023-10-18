@@ -1,0 +1,11 @@
+{
+  "presets": [
+    "@babel/preset-env",
+    "@babel/preset-react",
+    "@babel/preset-typescript" // Transpile TypeScript code
+  ],
+  "plugins": [
+    // Add any Babel plugins you need here
+    "@babel/plugin-transform-runtime"
+  ]
+}
