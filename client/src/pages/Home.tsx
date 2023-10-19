@@ -68,8 +68,8 @@ class Home extends Component<{}, State> {
       .catch((error) => {
         console.error('Error fetching brewery data: ', error);
      
-      });
-    }
+    });
+  }
 
   loadBreweries = () => {
   axios.get(`${server_name}/breweries/`)
