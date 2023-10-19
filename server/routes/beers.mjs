@@ -50,11 +50,12 @@ router.patch("/id/:id", async (req, res) => {
 
 // Fetches brewery by name
 router.get("/name/:name", async (req, res) => {
+ 
   try {
     const nameQuery = req.params.name; // The string to search for at the beginning
 
     // Use a regular expression with the $regex operator to match names that start with nameQuery
-    const result = await Beer.find({ Name: { $regex: new RegExp(`^${nameQuery}`) } }).limit(100);
+    const result = await Beer.find({ name: { $regex: new RegExp(`^${nameQuery}`) } }).populate('brewerId').limit(10);
 
     if (result.length === 0) {
       res.status(404).send("Not found");
@@ -65,6 +66,9 @@ router.get("/name/:name", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+
+
 
 // Add a new beer
 router.post("/", async (req, res) => {
@@ -78,6 +82,28 @@ router.post("/", async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
+
+
+// Get beers that match any term in the provided array
+router.post("/search", async (req, res) => {
+  try {
+    const { terms } = req.body;
+
+    if (!Array.isArray(terms)) {
+      return res.status(400).json({ error: "Terms must be an array" });
+    }
+
+    const searchCriteria = {
+      name: { $in: terms }, // Exact match on the 'name' field
+    };
+
+    const results = await Beer.find(searchCriteria).populate('brewerId').limit(100);
+    res.status(200).send(results);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 // Update the beer by ID
 router.patch("/:id", async (req, res) => {

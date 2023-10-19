@@ -51,18 +51,36 @@ class Home extends Component<{}, State> {
   }
 
   componentDidMount() {
-    axios.get(`${server_name}/breweries/`)
-    //axios.get('https://www.raystar.io/breweries/')
+   
+
+    this.loadBeers();
+    this.loadBreweries();
+    this.searchBeers();
+   
+  }
+
+  searchBeers = () => {
+    axios.post(`${server_name}/beers/search`, {  terms: ["Yuletide", "Yuppee K"] })
       .then((response) => {
-        this.setState({ breweries: response.data });
+        console.log(response);
+        
       })
       .catch((error) => {
         console.error('Error fetching brewery data: ', error);
-        this.setState({ error: 'Error fetching data' });
+     
       });
+    }
 
-    this.loadBeers();
-   
+  loadBreweries = () => {
+  axios.get(`${server_name}/breweries/`)
+  //axios.get('https://www.raystar.io/breweries/')
+    .then((response) => {
+      this.setState({ breweries: response.data });
+    })
+    .catch((error) => {
+      console.error('Error fetching brewery data: ', error);
+      this.setState({ error: 'Error fetching data' });
+    });
   }
 
   loadBeers = () => {
@@ -82,7 +100,6 @@ class Home extends Component<{}, State> {
     axios.get(`${server_name}/beers/name/${name}`)
       .then((response) => {
         this.setState({ beers: response.data });
-        console.log(response.data[0].brewerId);
       })
       .catch((error) => {
         console.error('Error fetching brewery data: ', error);
@@ -138,7 +155,7 @@ class Home extends Component<{}, State> {
     return (
       <>
         <div className='beer-table'>
-          <h1>CL Table</h1>
+          <h1>Beers</h1>
           <div>
           <input
               type="text"
