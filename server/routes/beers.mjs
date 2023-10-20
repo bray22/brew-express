@@ -82,8 +82,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-
-// Get beers that match any term in the provided array
+// case-insensitive regex
 router.post("/search", async (req, res) => {
   try {
     const { terms } = req.body;
@@ -92,9 +91,9 @@ router.post("/search", async (req, res) => {
       return res.status(400).json({ error: "Terms must be an array" });
     }
 
-    // Use a case-insensitive regular expression with the $in operator
+    // case-insensitive regex
     const searchCriteria = {
-      name: { $in: terms.map(term => new RegExp(term, 'i')) },
+      name: { $in: terms.map(term => new RegExp(`^${term}$`, 'i')) },
     };
 
     const results = await Beer.find(searchCriteria).populate('brewerId').limit(100);
@@ -103,8 +102,6 @@ router.post("/search", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-
 
 // Update the beer by ID
 router.patch("/:id", async (req, res) => {
