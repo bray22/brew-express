@@ -1,0 +1,9 @@
+{
+  "apps": [{
+    "script" : "./server/index.mjs",
+    "env": {
+      "NODE_ENV": "production",
+      "PORT": "8080"
+    }
+  }]
+}
