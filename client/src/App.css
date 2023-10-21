@@ -13,6 +13,11 @@
   }
 }
 
+a {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -26,6 +31,28 @@
 
 .App-link {
   color: #61dafb;
+}
+
+.admin-modal {
+  background: #eee;
+}
+
+.admin-modal div {
+  padding: 10px;
+}
+
+h2 {
+  padding: 10px;
+}
+
+td {
+  vertical-align: top;
+  padding: 10px;
+}
+
+#description {
+width: 600px;
+  height: 100px;
 }
 
 @keyframes App-logo-spin {

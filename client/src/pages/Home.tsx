@@ -1,5 +1,6 @@
 import React, { Component, useRef } from 'react';
 import axios from 'axios';
+import Modal from 'react-modal';
 
 import AutocompleteDropdown from '../components/AutocompleteDropdown';
 
@@ -13,12 +14,16 @@ interface BillingAddress {
 }
 
 interface Brewery {
+  _id: string;
   Name: string;
   BillingAddress: BillingAddress;
   type: string;
 }
 
 interface Beers {
+  labels: any;
+  description: string | number | readonly string[];
+  nameDisplay: string | number | readonly string[];
   _id: Object,
   name: string;
   BillingAddress: BillingAddress;
@@ -29,10 +34,12 @@ interface Beers {
 interface State {
   breweries: Brewery[];
   selectBreweries: Brewery[];
-  brewerId: String,
+  brewerId: Brewery,
   beers: Beers[];
   error: {},
-  searchString: "", // Initialize searchString
+  searchString: "",
+  selectedBeer: Beers | null;
+  isModalOpen: Boolean, 
 }
 
 class Home extends Component<{}, State> {
@@ -41,12 +48,16 @@ class Home extends Component<{}, State> {
     super(props);
     this.state = {
       breweries: [],
-      brewerId: "",
+      brewerId: null,
       selectBreweries: [],
       beers: [],
       error: {},
-      searchString: "", // Initialize searchString
+      searchString: "", 
+      selectedBeer: null,
+      isModalOpen: false, 
     };
+
+    Modal.setAppElement('#root'); // Replace '#your-app-root' with the actual element selector
     
   }
 
@@ -70,6 +81,41 @@ class Home extends Component<{}, State> {
      
     });
   }
+
+  // Function to open the modal for editing
+  openModal = (beer) => {
+    this.setState({ isModalOpen: true, selectedBeer: beer });
+  };
+
+  // Function to close the modal
+  closeModal = () => {
+    this.setState({ isModalOpen: false, selectedBeer: null });
+  };
+
+      // Function to update beer details
+  updateBeer = () => {
+    const { selectedBeer } = this.state;
+    const { description, nameDisplay, name, _id, brewerId } = selectedBeer;
+    console.log("selected beer")
+    console.log(this.state.selectedBeer);
+    // Make an API call to update the beer details
+    axios.patch(`http://localhost/beers/id/${_id}`, { 
+      name: name,
+      nameDisplay: nameDisplay,
+      description: description,
+      brewerId: brewerId
+    })
+    .then((response) => {
+      // Update the state with the updated beer
+      this.loadBeers();
+      console.log('Beer updated:', response.data);
+    })
+    .catch((error) => {
+      console.error('Error updating Beer:', error);
+    });
+    // After the update, close the modal
+    this.closeModal();
+  };
 
   loadBreweries = () => {
   axios.get(`${server_name}/breweries/`)
@@ -128,8 +174,12 @@ class Home extends Component<{}, State> {
   };
 
   updateBrewer = (brewerId) => {
+    // Create a copy of the selectedBeer with the updated brewerId
+    const updatedSelectedBeer = { ...this.state.selectedBeer, brewerId };
+
+    // Update the selectedBeer in the state
     this.setState({
-      brewerId: brewerId
+      selectedBeer: updatedSelectedBeer,
     });
   }
 
@@ -146,11 +196,18 @@ class Home extends Component<{}, State> {
   };
 
   render() {
-    const { breweries, beers, searchString } = this.state;
+    const { breweries, 
+      beers, 
+      searchString, 
+      selectedBeer, 
+      isModalOpen 
+    } = this.state;
 
     Array.isArray(beers) && beers.map((beer, index) => (
       {}
     ))
+
+    const tempName = selectedBeer?.name;
 
     return (
       <>
@@ -175,8 +232,7 @@ class Home extends Component<{}, State> {
             <tbody>
               {Array.isArray(beers) && beers.map((beer, index) => (
                 <tr key={index}>
-                  <td>{beer.name}</td>
-                  <td>{beer.brewerId?.Name || this.state.brewerId}</td>
+                  <td>{ <a onClick={() => this.openModal(beer)}>{beer.name}</a> || this.state.brewerId}</td>
                   <td>
                     <AutocompleteDropdown 
                       findBrewerByName={this.findBrewerByName} 
@@ -193,6 +249,114 @@ class Home extends Component<{}, State> {
             </tbody>
           </table>
         </div>
+
+         {/* Modal for editing beer details */}
+         <Modal
+          isOpen={isModalOpen}
+          onRequestClose={this.closeModal}
+          contentLabel="Edit Beer"
+          // Customize the modal styles here
+        >
+          {/* Modal content and form for editing */}
+          {selectedBeer && (
+            <div className='admin-modal'>
+              <h2>{selectedBeer?.name} : {selectedBeer?._id}</h2>
+              <table>
+                <tbody>
+                <tr>
+                    <td>
+                      <label htmlFor="name">Display Name:</label>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={selectedBeer?.name} 
+                         onChange={(e) => {
+                           // Update the selectedBeer with the new value
+                           this.setState((prevState) => ({
+                             selectedBeer: {
+                               ...prevState.selectedBeer,
+                               name: e.target.value,
+                             },
+                           }));
+                         }}
+                      />
+                    </td>
+                  </tr>
+
+
+                  <tr>
+                    <td>
+                      <label htmlFor="nameDisplay">Display Name:</label>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        id="nameDisplay"
+                        name="nameDisplay"
+                        value={selectedBeer?.nameDisplay} // Bind to the nameDisplay property
+                        onChange={(e) => {
+                          // Update the selectedBeer with the new value
+                          this.setState((prevState) => ({
+                            selectedBeer: {
+                              ...prevState.selectedBeer,
+                              nameDisplay: e.target.value,
+                            },
+                          }));
+                        }}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label htmlFor="brewer">Brewer: <h3>{selectedBeer.brewerId.Name}</h3></label>
+                    </td>
+                    <td>
+                      <AutocompleteDropdown 
+                        findBrewerByName={this.findBrewerByName} 
+                        updateBrewer={this.updateBrewer} 
+                        options={this.state.breweries} 
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label htmlFor="description">Description:</label>
+                    </td>
+                   
+                    <td>
+                      <textarea
+                        id="description"
+                        name="description"
+                        value={selectedBeer.description} // Bind to the description property
+                        onChange={(e) => {
+                          // Update the selectedBeer with the new value
+                          this.setState((prevState) => ({
+                            selectedBeer: {
+                              ...prevState.selectedBeer,
+                              description: e.target.value,
+                            },
+                          }));
+                        }}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                  <td colSpan={2}>
+                      <img src={selectedBeer?.labels?.medium} />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div>
+                <button onClick={this.updateBeer}>Save</button>
+                <button onClick={this.closeModal}>Cancel</button>
+              </div>
+            </div>
+          )}
+        </Modal>
       </>
     );
   }

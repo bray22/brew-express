@@ -7,7 +7,7 @@ import breweries from './routes/breweries.mjs';
 import fs from 'fs';
 import https from 'https';
 const https_port = 443; // The default HTTPS port
-const PORT = process.env.PORT || 80;
+const PORT = process.env.PORT || 8080;
 const app = express();
 
 

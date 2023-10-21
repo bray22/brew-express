@@ -32,21 +32,35 @@ router.get("/id/:id", async (req, res) => {
 });
 
 // Update a beer by its ID
+// Update a beer by its ID
 router.patch("/id/:id", async (req, res) => {
-  const { brewerId } = req.body;
+  const { 
+    name, 
+    nameDisplay, 
+    description,
+    brewerId
+  } = req.body;
   try {
-    console.log(req.params.id);
-    console.log(req);
-     const result = await Beer.findByIdAndUpdate(
-        req.params.id, 
-       { $set: { brewerId: brewerId } }, // Replace yourField and newValue
-      { new: true } // This option returns the updated document
+    const updateFields = { 
+      name, 
+      nameDisplay, 
+      description ,
+      brewerId
+    };
+
+    console.log(updateFields);
+
+    const result = await Beer.findByIdAndUpdate(
+      req.params.id,
+      { $set: updateFields }
     );
+
     res.status(200).send(result);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 // Fetches brewery by name
 router.get("/name/:name", async (req, res) => {
@@ -105,6 +119,7 @@ router.post("/search", async (req, res) => {
 
 // Update the beer by ID
 router.patch("/:id", async (req, res) => {
+  console.log(req);
   try {
     const result = await Beer.findByIdAndUpdate(req.params.id, { $push: { comments: req.body } });
     res.status(200).send(result);
