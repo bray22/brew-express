@@ -10,15 +10,21 @@ import auth from './routes/auth.mjs';
 import passport from 'passport';
 import passportSetup from "./passport.cjs";
 import cookieSession from 'cookie-session';
+import path from 'path'; // Import the path module
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const https_port = 443; // The default HTTPS port
 const PORT = process.env.PORT || 8080;
 const app = express();
 const authRoute = express.Router();
 
-const privateKey = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/privkey.pem', 'utf8');
-const certificate = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/fullchain.pem', 'utf8');
-const credentials = { key: privateKey, cert: certificate };
-const httpsServer = https.createServer(credentials, app);
+// const privateKey = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/privkey.pem', 'utf8');
+// const certificate = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/fullchain.pem', 'utf8');
+// const credentials = { key: privateKey, cert: certificate };
+// const httpsServer = https.createServer(credentials, app);
 
 app.use(
   cookieSession({
@@ -41,7 +47,7 @@ app.use('/breweries', breweries);
 app.use('/auth', auth);
 
 app.get('/status.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'status.html?channel=' + req.body.email ));
+  res.sendFile(path.join(__dirname, 'status.html' ));
 });
 
 // Global error handling
@@ -60,6 +66,6 @@ app.all('*', (req, res) => {
   res.status(404).send('Oops! The page you requested does not exist.');
 });
 
-httpsServer.listen(https_port, () => {
-  console.log(`Server is running on https://www.raystar.io:${https_port}`);
-});
+// httpsServer.listen(https_port, () => {
+//   console.log(`Server is running on https://www.raystar.io:${https_port}`);
+// });
