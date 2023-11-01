@@ -39,8 +39,13 @@ router.get("/google/callback",
     scope: ["profile", "email", "openid"], // Add the required Google API scopes
   }),
   (req, res) => {
-    // Successfully authenticated, redirect to the success URL with user data as query parameters
-    res.redirect(`exp://10.0.0.88:19000?email=${req.user.emails[0].value}&name=${req.user.displayName}`);
+     // Successfully authenticated, redirect to the success URL with user data as query parameters
+     const email = req.user.emails[0].value;
+     const name = req.user.displayName;
+     const return_url = req.query.return_url; // Extract the return URL from the query parameters
+     const redirectURL = `${return_url}?email=${email}&name=${name}`;
+ 
+     res.redirect(redirectURL);
   }
 
   // passport.authenticate("google", {
