@@ -1,62 +1,60 @@
 import express from "express";
 import db from "../db/conn.mjs";
 import passport from "passport";
+import fetch from 'node-fetch';
 
 const router = express.Router();
-//const CLIENT_URL = "http://localhost:3000/"
+async function signUp(code, res) {
+  
+  const url = `https://oauth2.googleapis.com/token?code=${code}&client_id=${YOUR_CLIENT_ID}&client_secret=${YOUR_CLIENT_SECRET}&redirect_uri=http://localhost:3001/google&grant_type=authorization_code`;
 
-// router.get("/login/success", (req,res) => {
-//   if (req.user) {
-//     res.status(200).json({
-//       error: false,
-//       message: "Successfully Logged In",
-//       user: req.user
-//     });
-//     console.log("SUCCESS");
-//   } else {
-//     res.status(403).json({error: true, message: "Not Authorized"})
-//   }
-// });
-
-router.get('/login/success', (req, res) => {
-  // Extract the code from the request object
-  const code = req.query.code;
-
-  // Redirect the user to the status.html page with the code
-  res.redirect(`/status.html?code=${code}`);
-});
-
-router.get("/login/failed", (req,res) => {
-  res.status(401).json({
-    error: true,
-    message: "Login Failure"
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
-});
 
-router.get("/google/callback", 
+  const data = await response.json();
+  console.log("data : ", data);
 
-  passport.authenticate("google", {
-    failureRedirect: "/login/failed",
-    scope: ["profile", "email"], // Add the required Google API scopes
-  }),
-  (req, res) => {
-    // Successfully authenticated, redirect to the success URL with user data as query parameters
-    res.redirect(`exp://10.166.244.61:19000?email=${req.user.emails[0].value}&name=${req.user.displayName}`);
+  // get the id token from the response
+  const { id_token } = data;
+
+  // verify the id token
+  const verifyResponse = await fetch(
+    `https://oauth2.googleapis.com/tokeninfo?id_token=${id_token}`
+  );
+
+  const verifyData = await verifyResponse.json();
+  console.log("verifyData : ", verifyData);
+
+  // get the user data from the verify data
+  const { name, email, picture } = verifyData;
+
+  // This res.send is the key to redirecting back to our expo go app.
+// ex: you have to enter your IP adress that is running your expo go application.
+  res.send(`<script>window.location.replace("exp://?email=${email}&name=${name}&picture=${picture}")</script>`);
+
+}
+
+
+
+router.get("/", async (req, res) => {
+ console.log("req.query : ", req.query);
+
+  // use the code to get the access token
+
+  const { code } = req.query;
+
+  if (!code) {
+    return res.status(400).json({
+      error: "invalid code",
+    });
   }
 
-  // passport.authenticate("google", {
-  //   successRedirect: 'exp://10.166.244.61:19000',
-  //   failureRedirect: "login/failed"
-  // })
-);
+  signUp(code, res);
 
-router.get("/google", 
-  passport.authenticate("google", ["profile","email"])
-);
-
-router.get("/logout", (req, res) =>{  
-  req.logout();
-  res.redirect(CLIENT_URL);
 });
 
 export default router;
