@@ -40,7 +40,7 @@ router.get("/google/callback",
   }),
   (req, res) => {
     // Successfully authenticated, redirect to the success URL with user data as query parameters
-    res.redirect(`exp://10.0.8.88:19000?email=${req.user.emails[0].value}&name=${req.user.displayName}`);
+    res.redirect(`exp://10.0.0.88:19000?email=${req.user.emails[0].value}&name=${req.user.displayName}`);
   }
 
   // passport.authenticate("google", {
