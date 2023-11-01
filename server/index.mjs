@@ -40,6 +40,10 @@ app.use('/beers', beers);
 app.use('/breweries', breweries);
 app.use('/auth', auth);
 
+app.get('/status.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'status.html?channel=' + req.body.email ));
+});
+
 // Global error handling
 app.use((err, _req, res, _next) => {
   console.error(err); // Log the error for debugging

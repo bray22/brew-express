@@ -3,7 +3,7 @@ import db from "../db/conn.mjs";
 import passport from "passport";
 
 const router = express.Router();
-const CLIENT_URL = "http://localhost:3000/"
+//const CLIENT_URL = "http://localhost:3000/"
 
 router.get("/login/success", (req,res) => {
   if (req.user) {
@@ -27,7 +27,7 @@ router.get("/login/failed", (req,res) => {
 
 router.get("/google/callback", 
   passport.authenticate("google", {
-    successRedirect: CLIENT_URL,
+    successRedirect: '/status.html',
     failureRedirect: "login/failed"
   })
 );
