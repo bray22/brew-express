@@ -50,7 +50,7 @@ router.get("/google/callback",
     // Initialize the Google People API client
     const peopleApi = google.people({
       version: "v1",
-      auth: yourGoogleApiClient, // Initialize and configure your Google API client
+      auth: openId, // Initialize and configure your Google API client
     });
 
     // Retrieve the user's Google ID from the authenticated user's profile
