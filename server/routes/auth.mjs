@@ -57,14 +57,14 @@ router.get("/google/callback",
     const googleId = req.user.id;
 
     // Use the Google People API to get the user's profile information, including the profile picture
-    const profileResponse = await peopleApi.people.get({
-      resourceName: `people/${googleId}`,
-      personFields: "photos",
-    });
+    // const profileResponse = await peopleApi.people.get({
+    //   resourceName: `people/${googleId}`,
+    //   personFields: "photos",
+    // });
 
-    const profilePicture = profileResponse.data.photos ? profileResponse.data.photos[0].url : null;
+    //const profilePicture = profileResponse.data.photos ? profileResponse.data.photos[0].url : null;
 
-    const redirectURL = `${return_url}?email=${email}&name=${name}&profilePicture=${profilePicture}`;
+    const redirectURL = `${return_url}?email=${email}&name=${name}`;
 
     res.redirect(redirectURL);
   }
