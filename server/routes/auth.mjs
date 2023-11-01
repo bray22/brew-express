@@ -34,14 +34,13 @@ router.get("/login/failed", (req,res) => {
 });
 
 router.get("/google/callback", 
-
   passport.authenticate("google", {
     failureRedirect: "/login/failed",
-    scope: ["profile", "email"], // Add the required Google API scopes
+    scope: ["profile", "email", "picture"], // Add the required Google API scopes
   }),
   (req, res) => {
     // Successfully authenticated, redirect to the success URL with user data as query parameters
-    res.redirect(`exp://10.166.244.61:19000?email=${req.user.emails[0].value}&name=${req.user.displayName}`);
+    res.redirect(`exp://10.0.8.88:19000?email=${req.user.emails[0].value}&name=${req.user.displayName}`);
   }
 
   // passport.authenticate("google", {
