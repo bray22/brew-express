@@ -64,7 +64,7 @@ router.get("/google/callback",
 
     const profilePicture = profileResponse.data.photos ? profileResponse.data.photos[0].url : null;
 
-    const redirectURL = `${return_url}?email=${email}&name=${name}`;
+    const redirectURL = `${return_url}?email=${email}&name=${name}&profilePicture=${profilePicture}`;
 
     res.redirect(redirectURL);
   }
