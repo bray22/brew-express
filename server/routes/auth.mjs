@@ -1,8 +1,6 @@
 import express from "express";
 import db from "../db/conn.mjs";
 import passport from "passport";
-import { google } from 'googleapis';
-//const { google } = require("googleapis");
 
 const router = express.Router();
 //const CLIENT_URL = "http://localhost:3000/"
