@@ -1,7 +1,7 @@
 import express from "express";
 import db from "../db/conn.mjs";
 import passport from "passport";
-import googleapis from 'google';
+import { google } from 'googleapis';
 //const { google } = require("googleapis");
 
 const router = express.Router();
