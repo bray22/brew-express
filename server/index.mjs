@@ -9,6 +9,7 @@ import https from 'https';
 import auth from './routes/auth.mjs';
 import passport from 'passport';
 import passportSetup from "./passport.cjs";
+import cookieSession from 'cookie-session';
 const https_port = 443; // The default HTTPS port
 const PORT = process.env.PORT || 8080;
 const app = express();
