@@ -1,12 +1,19 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import Select from 'react-select';
 
 class AutocompleteDropdown extends Component {
-  state = {
-    selectedOption: null,
-    inputText: null,
-    dropdownOptions: []
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedOption: null,
+      inputText: null,
+      dropdownOptions: []
+    };
+  }
+
+  componentDidMount() {
+    console.log(this.props);
+  }
 
   handleChange = (selectedOption) => {
     if (selectedOption) {
@@ -27,20 +34,15 @@ class AutocompleteDropdown extends Component {
 
   render() {
     const { selectedOption } = this.state;
+    const { brewer } = this.props;
 
     // Replace this with your data source (e.g., an array of options)
-    const options3 = [
-      { value: 'option1', label: 'Option 1' },
-     { value: 'option2', label: 'Option 2' },
-       { value: 'option3', label: 'Option 3' },
-     ];
-
     const options = this.state?.dropdownOptions ? this.state?.dropdownOptions?.map((item)=>{
       const option = { 
         label: "",
-        value:"", 
+        value: "", 
       }
-      option.label = item.Name;
+      option.label = item?.Name;
       option.value = item._id;
       return option
     }) : null;
@@ -48,7 +50,7 @@ class AutocompleteDropdown extends Component {
     return (
       <div>
         <Select
-          value={selectedOption}
+          value={selectedOption || this.props.default}
           onChange={this.handleChange}
           onInputChange={this.handleInputChange}
           options={options}

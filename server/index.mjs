@@ -13,6 +13,7 @@ import cookieSession from 'cookie-session';
 import path from 'path'; // Import the path module
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -21,10 +22,15 @@ const PORT = process.env.PORT || 8080;
 const app = express();
 const authRoute = express.Router();
 
-const privateKey = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/privkey.pem', 'utf8');
-const certificate = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/fullchain.pem', 'utf8');
-const credentials = { key: privateKey, cert: certificate };
-const httpsServer = https.createServer(credentials, app);
+// Define your Google OAuth credentials.
+const GOOGLE_CLIENT_ID = '1047398369277-bu4148048i9okalv31f58au345uf67ss.apps.googleusercontent.com';
+const GOOGLE_CLIENT_SECRET = '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';
+const GOOGLE_CALLBACK_URL = 'https://raystar.io/auth/google/callback'; // Replace with your server's domain
+
+// const privateKey = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/privkey.pem', 'utf8');
+// const certificate = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/fullchain.pem', 'utf8');
+// const credentials = { key: privateKey, cert: certificate };
+// const httpsServer = https.createServer(credentials, app);
 
 app.use(
   cookieSession({
@@ -34,6 +40,42 @@ app.use(
 
    })
 )
+
+// Create a Google OAuth 2.0 strategy for passport.
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: GOOGLE_CLIENT_ID,
+      clientSecret: GOOGLE_CLIENT_SECRET,
+      callbackURL: GOOGLE_CALLBACK_URL,
+    },
+    (token, tokenSecret, profile, done) => {
+      // This function will be called once the user is authenticated with Google.
+      // You can store user data in your database or perform other actions here.
+      return done(null, profile);
+    }
+  )
+);
+
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+
+passport.deserializeUser((obj, done) => {
+  done(null, obj);
+});
+
+// Create a route for Google login.
+app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+// Create a callback route to handle the authentication response.
+app.get(
+  '/auth/google/callback',
+  passport.authenticate('google', {
+    successRedirect: '/profile', // Redirect to your profile page
+    failureRedirect: '/login',   // Redirect to your login page on failure
+  })
+);
 
 // Middlewares
 app.use(cors());
@@ -66,6 +108,6 @@ app.all('*', (req, res) => {
   res.status(404).send('Oops! The page you requested does not exist.');
 });
 
-httpsServer.listen(https_port, () => {
-   console.log(`Server is running on https://www.raystar.io:${https_port}`);
-});
+// httpsServer.listen(https_port, () => {
+//    console.log(`Server is running on https://www.raystar.io:${https_port}`);
+// });

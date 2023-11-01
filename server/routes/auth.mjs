@@ -36,7 +36,7 @@ router.get("/login/failed", (req,res) => {
 router.get("/google/callback", 
   passport.authenticate("google", {
     failureRedirect: "/login/failed",
-    scope: ["profile", "email", "picture"], // Add the required Google API scopes
+    scope: ["profile", "email", "openid"], // Add the required Google API scopes
   }),
   (req, res) => {
     // Successfully authenticated, redirect to the success URL with user data as query parameters

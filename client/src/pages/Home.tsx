@@ -1,9 +1,13 @@
 import React, { Component, useRef } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
-
+import Beer from '../models/Beer';
 import AutocompleteDropdown from '../components/AutocompleteDropdown';
+import { ObjectId } from 'mongodb';
 
+import * as WebBrowser from "expo-web-browser";
+//import { useNavigation } from "@react-navigation/native";
+import * as Linking from "expo-linking";
 const server_name = 'http://localhost';
 //const server_name = 'https://www.raystar.io';
 
@@ -20,12 +24,17 @@ interface Brewery {
   type: string;
 }
 
+interface label {
+  medium: string
+}
+
 interface Beers {
-  labels: any;
+  labels: label;
   description: string | number | readonly string[];
   nameDisplay: string | number | readonly string[];
   _id: Object,
   name: string;
+  image: String;
   BillingAddress: BillingAddress;
   brewerId: Brewery;
   type: string;
@@ -40,6 +49,7 @@ interface State {
   searchString: "",
   selectedBeer: Beers | null;
   isModalOpen: Boolean, 
+  formMode: String
 }
 
 class Home extends Component<{}, State> {
@@ -55,19 +65,45 @@ class Home extends Component<{}, State> {
       searchString: "", 
       selectedBeer: null,
       isModalOpen: false, 
+      formMode: ""
     };
 
     Modal.setAppElement('#root'); // Replace '#your-app-root' with the actual element selector
-    
   }
 
+  handleGoogleOAuth = () => {
+    // Step 1: Initiate the Google OAuth process by redirecting to /auth/google.
+    //window.location.href = 'https://localhost/auth/google';
+  };
+
   componentDidMount() {
-   
+    console.log("MOUNT");
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessToken = urlParams.get('accessToken');
+    const user = JSON.parse(urlParams.get('user'));
+console.log("AT");
+
+console.log(urlParams);
+
+    if (accessToken) {
+      // Access token is available, you can use it for authorized requests.
+      console.log('Access Token:', accessToken);
+    }
+
+    if (user) {
+      // User information is available.
+      console.log('User Info:', user);
+    }
+
+
 
     this.loadBeers();
     this.loadBreweries();
     this.searchBeers();
-   
+  }
+
+  googleAuth = () => {
+    window.open('https://www.raystar.io/auth/google/callback', "_self");
   }
 
   searchBeers = () => {
@@ -82,24 +118,27 @@ class Home extends Component<{}, State> {
     });
   }
 
+  openModalNew = () => {
+    this.setState({ isModalOpen: true, formMode:'new', selectedBeer: new Beer() });
+  };
+
   // Function to open the modal for editing
-  openModal = (beer) => {
-    this.setState({ isModalOpen: true, selectedBeer: beer });
+  openModalUpdate = (beer) => {
+    this.setState({ isModalOpen: true, formMode:'update', selectedBeer: beer });
   };
 
   // Function to close the modal
   closeModal = () => {
-    this.setState({ isModalOpen: false, selectedBeer: null });
+    this.setState({ isModalOpen: false, formMode:"", selectedBeer: null });
   };
 
-      // Function to update beer details
-  updateBeer = () => {
+  createBeer = () => {
     const { selectedBeer } = this.state;
-    const { description, nameDisplay, name, _id, brewerId } = selectedBeer;
+    const { description, nameDisplay, name, brewerId } = selectedBeer;
     console.log("selected beer")
     console.log(this.state.selectedBeer);
     // Make an API call to update the beer details
-    axios.patch(`http://localhost/beers/id/${_id}`, { 
+    axios.post(`http://localhost/beers/`, { 
       name: name,
       nameDisplay: nameDisplay,
       description: description,
@@ -107,7 +146,32 @@ class Home extends Component<{}, State> {
     })
     .then((response) => {
       // Update the state with the updated beer
-      this.loadBeers();
+      console.log('Beer create:', response.data);
+    })
+    .catch((error) => {
+      console.error('Error creating Beer:', error);
+    });
+    // After the update, close the modal
+    this.closeModal();
+  };
+
+      // Function to update beer details
+  updateBeer = () => {
+    const { selectedBeer } = this.state;
+    const { description, nameDisplay, name, _id, brewerId, image } = selectedBeer;
+    console.log("selected beer")
+    console.log(this.state.selectedBeer);
+    // Make an API call to update the beer details
+    axios.patch(`http://localhost/beers/id/${_id}`, { 
+      name: name,
+      nameDisplay: nameDisplay,
+      description: description,
+      brewerId: brewerId,
+      image: image,
+    })
+    .then((response) => {
+      // Update the state with the updated beer
+      //this.loadBeers();
       console.log('Beer updated:', response.data);
     })
     .catch((error) => {
@@ -115,6 +179,21 @@ class Home extends Component<{}, State> {
     });
     // After the update, close the modal
     this.closeModal();
+  };
+
+  deleteBeer = (beer) => {
+    console.log('beer')
+    const objId = beer._id;
+    // Make an API call to update the beer details
+    axios.delete(`http://localhost/beers/id/${objId}`)
+    .then((response) => {
+      // Update the state with the updated beer
+      this.loadBeers();
+      console.log('Beer delete:', response.data);
+    })
+    .catch((error) => {
+      console.error('Error deleting Beer:', error);
+    });
   };
 
   loadBreweries = () => {
@@ -195,12 +274,16 @@ class Home extends Component<{}, State> {
       });
   };
 
+ 
+
   render() {
+    console.log(this.state);
     const { breweries, 
       beers, 
       searchString, 
       selectedBeer, 
-      isModalOpen 
+      isModalOpen,
+      formMode 
     } = this.state;
 
     Array.isArray(beers) && beers.map((beer, index) => (
@@ -212,7 +295,15 @@ class Home extends Component<{}, State> {
     return (
       <>
         <div className='beer-table'>
+        <div>
+        {/* <button onClick={this.handleGoogleOAuth}>Login with Google</button> */}
+      </div>
+          <h1 onClick={this.googleAuth}>Google Login</h1>
+
+          <h1 onClick={this.openModalNew}>Add New </h1>
+          
           <h1>Beers</h1>
+
           <div>
           <input
               type="text"
@@ -232,18 +323,11 @@ class Home extends Component<{}, State> {
             <tbody>
               {Array.isArray(beers) && beers.map((beer, index) => (
                 <tr key={index}>
-                  <td>{ <a onClick={() => this.openModal(beer)}>{beer.name}</a> || this.state.brewerId}</td>
+                  <td>{ <a onClick={() => this.openModalUpdate(beer)}>{beer.name}</a> || this.state.brewerId}</td>
                   <td>
-                    <AutocompleteDropdown 
-                      findBrewerByName={this.findBrewerByName} 
-                      updateBrewer={this.updateBrewer} 
-                      options={this.state.breweries} />
+                    {beer.brewerId?.Name}
                   </td>
-                  <td>
-                    <button onClick={()=>this.updateBeerBrewer(beer._id)}>
-                      Save
-                      </button>
-                  </td>
+                  <td><a onClick={() => this.deleteBeer(beer)}>Delete</a> </td>
                 </tr>
               ))}
             </tbody>
@@ -260,12 +344,14 @@ class Home extends Component<{}, State> {
           {/* Modal content and form for editing */}
           {selectedBeer && (
             <div className='admin-modal'>
-              <h2>{selectedBeer?.name} : {selectedBeer?._id}</h2>
+              <h2>{selectedBeer?.name}</h2>
               <table>
                 <tbody>
                 <tr>
                     <td>
-                      <label htmlFor="name">Display Name:</label>
+                      <label htmlFor="name">
+                        Display Name:
+                      </label>
                     </td>
                     <td>
                       <input
@@ -311,7 +397,32 @@ class Home extends Component<{}, State> {
                   </tr>
                   <tr>
                     <td>
-                      <label htmlFor="brewer">Brewer: <h3>{selectedBeer.brewerId.Name}</h3></label>
+                      <label htmlFor="nameDisplay">Image:</label>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        id="image"
+                        name="image"
+                        value={selectedBeer?.labels?.medium} // Bind to the nameDisplay property
+                        onChange={(e) => {
+                          // Update the selectedBeer with the new value for labels.medium
+                          this.setState((prevState) => ({
+                            selectedBeer: {
+                              ...prevState.selectedBeer,
+                              labels: {
+                                ...prevState.selectedBeer.labels, // Keep the existing labels properties
+                                medium: e.target.value, // Update the medium property
+                              },
+                            },
+                          }));
+                        }}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label htmlFor="brewer">Brewer: <h3>{selectedBeer.brewerId?.Name}</h3></label>
                     </td>
                     <td>
                       <AutocompleteDropdown 
@@ -351,7 +462,7 @@ class Home extends Component<{}, State> {
                 </tbody>
               </table>
               <div>
-                <button onClick={this.updateBeer}>Save</button>
+                {formMode === "new" ? (<button onClick={this.createBeer}>Create</button>) : (<button onClick={this.updateBeer}>Update</button>)}
                 <button onClick={this.closeModal}>Cancel</button>
               </div>
             </div>
