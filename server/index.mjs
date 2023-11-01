@@ -21,10 +21,10 @@ const PORT = process.env.PORT || 8080;
 const app = express();
 const authRoute = express.Router();
 
-// const privateKey = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/privkey.pem', 'utf8');
-// const certificate = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/fullchain.pem', 'utf8');
-// const credentials = { key: privateKey, cert: certificate };
-// const httpsServer = https.createServer(credentials, app);
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/fullchain.pem', 'utf8');
+const credentials = { key: privateKey, cert: certificate };
+const httpsServer = https.createServer(credentials, app);
 
 app.use(
   cookieSession({
@@ -66,6 +66,6 @@ app.all('*', (req, res) => {
   res.status(404).send('Oops! The page you requested does not exist.');
 });
 
-// httpsServer.listen(https_port, () => {
-//   console.log(`Server is running on https://www.raystar.io:${https_port}`);
-// });
+httpsServer.listen(https_port, () => {
+   console.log(`Server is running on https://www.raystar.io:${https_port}`);
+});
