@@ -46,7 +46,7 @@ router.get("/google/callback",
      
      if (!return_url) {
        // If return_url is not provided, set a default value or handle it as needed
-       return_url = "exp://10.0.0.88:19000";
+       //return_url = "exp://10.0.0.88:19000";
      }
 
      if (return_url) {
