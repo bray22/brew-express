@@ -36,15 +36,16 @@ router.get("/login/failed", (req,res) => {
 router.get("/google/callback", 
   passport.authenticate("google", {
     failureRedirect: "/login/failed",
-    scope: ["profile", "email", "openid"], // Add the required Google API scopes
+    scope: ["profile", "email"], // Add the required Google API scopes
   }),
   (req, res) => {
      // Successfully authenticated, redirect to the success URL with user data as query parameters
      const email = req.user.emails[0].value;
      const name = req.user.displayName;
-     const return_url = req.query.return_url; // Extract the return URL from the query parameters
+     let return_url = req.query.return_url; // Extract the return URL from the query parameters
+     return_url = "exp://10.0.0.88:19000";
      const redirectURL = `${return_url}?email=${email}&name=${name}`;
- 
+      
      res.redirect(redirectURL);
   }
 
