@@ -46,7 +46,7 @@ router.get("/google/callback",
      
      if (!return_url) {
        // If return_url is not provided, set a default value or handle it as needed
-       return_url = req.originalUrl;
+       return_url = "exp://";
      }
 
      if (return_url) {
