@@ -42,11 +42,11 @@ router.get("/google/callback",
      // Successfully authenticated, redirect to the success URL with user data as query parameters
      const email = req.user.emails[0].value;
      const name = req.user.displayName;
-     let return_url = req?.query?.return_url; // Extract the return URL from the query parameters
+     let return_url = req.query.return_url; // Extract the return URL from the query parameters
      
      if (!return_url) {
        // If return_url is not provided, set a default value or handle it as needed
-       //return_url = "exp://10.0.0.88:19000";
+       return_url = "exp://10.0.0.88:19000";
      }
 
      if (return_url) {
