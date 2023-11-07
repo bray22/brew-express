@@ -26,7 +26,7 @@ const PORT = process.env.PORT || 8080;
 const app = express();
 const authRoute = express.Router();
 
-if (process.env.ENVIRONMENT === "Prod") {
+if (process.env.ENVIRONMENT !== "Dev") {
   const privateKey = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/privkey.pem', 'utf8');
   const certificate = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/fullchain.pem', 'utf8');
   const credentials = { key: privateKey, cert: certificate };
