@@ -8,9 +8,8 @@ import { ObjectId } from 'mongodb';
 import * as WebBrowser from "expo-web-browser";
 //import { useNavigation } from "@react-navigation/native";
 import * as Linking from "expo-linking";
-const server_name = 'http://localhost';
+const server_name = 'http://localhost:8080';
 //const server_name = 'https://www.raystar.io';
-
 
 interface BillingAddress {
   city: string;

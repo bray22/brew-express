@@ -18,7 +18,7 @@
 // This sample is based off of:
 // https://github.com/sendgrid/sendgrid-nodejs/tree/master/packages/mail
 const sendgrid = require('@sendgrid/mail');
-sendgrid.setApiKey(process.env.SENDGRID_API_KEY || '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');
+sendgrid.setApiKey(process.env.SENDGRID_API_KEY);
 
 async function sendgridExample() {
   await sendgrid.send({

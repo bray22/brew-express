@@ -19,3 +19,15 @@ code {
 .beer-table td {
   padding: 0 10px 0 10px;
  }
+
+.username {
+  padding: 20px;
+}
+
+.password {
+  padding: 20px;
+}
+
+button {
+  margin: 20px;
+}

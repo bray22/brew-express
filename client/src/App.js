@@ -1,5 +1,6 @@
 import './App.css';
 import Home from './pages/Home';
+import Login from './pages/Login';
 import Layout from './pages/Layout';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
@@ -12,28 +13,29 @@ import axios from 'axios';
 function App() {
   const [user, setUser] = useState(null);
 
-  useEffect(()=>{
-    getUser();
-  },
-  []);
+  // useEffect(()=>{
+  //   getUser();
+  // },
+  // []);
 
-  const getUser = async () => {
-    try {
-      const url = "http://localhost/auth/google/callback";
-      const {data} = await axios.get(url);
-      setUser(data.user._json);
+  // const getUser = async () => {
+  //   try {
+  //     const url = "http://localhost/auth/google/callback";
+  //     const {data} = await axios.get(url);
+  //     setUser(data.user._json);
 
-    } catch(e) {
-      console.log(e);
-    }
+  //   } catch(e) {
+  //     console.log(e);
+  //   }
 
-  } 
+  // } 
 
   return (
     <> 
     <BrowserRouter>
       <Routes>
-        <Route index element={<Home />} />
+        <Route path="/" index element={<Home />} />
+        <Route path="/login" index element={<Login />} />
       </Routes>
     </BrowserRouter>
     </>
