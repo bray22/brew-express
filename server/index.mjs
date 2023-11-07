@@ -113,7 +113,7 @@ app.all('*', (req, res) => {
   res.status(404).send('Oops! The page you requested does not exist.');
 });
 
-if (process.env.ENVIRONMENT === "Prod") {
+if (process?.env?.ENVIRONMENT !== "Dev") {
   httpsServer.listen(https_port, () => {
     //console.log(`Server is running on https://www.raystar.io:${https_port}`);
   });
