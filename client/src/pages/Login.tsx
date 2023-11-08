@@ -39,9 +39,28 @@ class Login extends Component<{}, State> {
       email 
     })
       .then((response) => {
-        console.log("dfsffdf");
-
         const { user } = response.data;
+        console.log(user);
+        this.setState({ isLoggedIn: true, error: null });
+        // You can also store the user data in a context or Redux store for future use.
+      })
+      .catch((error) => {
+        this.setState({ isLoggedIn: false, error: 'Invalid username or password' });
+      });
+  }
+
+  handleReset = () => {
+    const { email } = this.state;
+    const server = "http://localhost: 300"
+    // Make an API request to the Express server for authentication
+    axios.post(`http://localhost:8080/login/reset`, 
+    { 
+      email, 
+      server
+    })
+      .then((response) => {
+        const user = response.data;
+        console.log(user);
         this.setState({ isLoggedIn: true, error: null });
         // You can also store the user data in a context or Redux store for future use.
       })
@@ -125,9 +144,27 @@ class Login extends Component<{}, State> {
               />
             </div>
           </div>
-          <button onClick={this.handleLogin}>Login</button>
+          <button onClick={this.handleReset}>Login</button>
         </div>
 
+        {/* email */}
+        <div id="login">
+          <div className="username">
+            <div>Email</div>
+            <div>
+              <input
+                type="text"
+                name="email"
+                value={this.state.email}
+                onChange={this.handleEmailChange}
+              />
+            </div>
+          </div>
+       
+          <button onClick={this.handleReset}>Reset</button>
+        </div>
+
+        {/* new user */}
         <div id="login">
         <div className="username">
             <div>First Name</div>
