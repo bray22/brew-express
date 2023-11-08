@@ -41,14 +41,12 @@ router.post("/reset", async (req, res) => {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY); // Set the SendGrid API key using sgMail
 
     async function sendgridExample() {
-      // await sgMail.send({ // Use sgMail instead of sendgrid
-      //   to: 'bray22@gmail.com',
-      //   from: 'sipstr.ai@gmail.com',
-      //   subject: 'Reset Email',
-      //   text: 'reset you password.',
-      // });
-      console.log("Email Sent");
-      console.log(server);
+       await sgMail.send({ // Use sgMail instead of sendgrid
+         to: 'bray22@gmail.com',
+         from: 'sipstr.ai@gmail.com',
+         subject: 'Reset Email',
+         text: 'reset you password.',
+       });
     }
 
     sendgridExample();
