@@ -22,7 +22,6 @@ router.post("/", async (req, res) => {
     }
     if (returnUser) {
       // User with the provided username and password exists
-
       res.status(200).send(returnUser);
     } else {
       // Authentication failed
