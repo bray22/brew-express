@@ -15,6 +15,7 @@ router.post("/", async (req, res) => {
     // Replace 'User' with the actual User model in your application
     const user = await User.findOne({ username, password });
     const returnUser = {
+      "userId": user._id,
       "username": user.username,
       "firstName": user.firstName,
       "lastName": user.lastName

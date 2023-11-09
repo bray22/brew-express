@@ -1,6 +1,7 @@
 import express from "express";
 import db from "../db/conn.mjs";
 import { ObjectId } from "mongodb";
+import Feedback from "../models/Feedback.mjs";
 
 const router = express.Router();
 
@@ -37,11 +38,18 @@ router.get("/:id", async (req, res) => {
 
 // Add a new document to the collection
 router.post("/", async (req, res) => {
-  let collection = await db.collection("posts");
-  let newDocument = req.body;
-  newDocument.date = new Date();
-  let result = await collection.insertOne(newDocument);
-  res.send(result).status(204);
+  try {
+    let feedback = new Feedback();
+    let collection = await db.collection("feedback");
+    feedback.userId = ObjectId( req.params.id );
+    feedback.feedback = req.params.feedback;
+    feedback.createDate = new Date();
+    
+    let feedbackResult = await collection.insertOne( feedback );
+    res.status(200).send( feedbackResult );
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Update the post with a new comment
