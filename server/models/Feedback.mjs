@@ -1,9 +1,10 @@
 import mongoose from 'mongoose';
+import User from './User.mjs';
 
 // Define the schema for the Beer model
 const feedbaackSchema = new mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
-  userId: User._id,
+  userId: String,
   feedback: String,
   createDate: Date
 });
