@@ -6,6 +6,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
+import Feedback from './pages/Feedback';
+import Reviews from './pages/Reviews';
+import Favorites from './pages/Favorites';
 
 //const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -36,6 +39,9 @@ function App() {
       <Routes>
         <Route path="/" index element={<Home />} />
         <Route path="/login" index element={<Login />} />
+        <Route path="/posts" index element={<Feedback />} />
+        <Route path="/favorites" index element={<Favorites />} />
+        <Route path="/reviews" index element={<Reviews />} />
       </Routes>
     </BrowserRouter>
     </>

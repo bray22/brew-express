@@ -7,6 +7,8 @@ import breweries from './routes/breweries.mjs';
 import login from './routes/login.mjs';
 import users from './routes/users.mjs';
 import posts from './routes/posts.mjs';
+import favorites from './routes/favorites.mjs';
+import reviews from './routes/reviews.mjs';
 import fs from 'fs';
 import https from 'https';
 import auth from './routes/auth.mjs';
@@ -79,6 +81,8 @@ app.use('/auth', auth);
 app.use('/users', users);
 app.use('/login', login);
 app.use('/posts', posts);
+app.use('/favorites', favorites);
+app.use('/reviews', reviews);
 
 app.get('/status.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'status.html' ));
@@ -102,6 +106,6 @@ app.all('*', (req, res) => {
 
 if (process?.env?.ENVIRONMENT !== "Dev") {
   httpsServer.listen(https_port, () => {
-     console.log(`Server is running on https://www.raystar.io:${https_port}`);
-   });
+    console.log(`Server is running on https://www.raystar.io:${https_port}`);
+  });
 }

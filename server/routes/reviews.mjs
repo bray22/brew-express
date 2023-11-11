@@ -1,28 +1,28 @@
 import express from "express";
 import { ObjectId } from "mongodb";
-import Feedback from "../models/Feedback.mjs";
+import Review from "../models/Review.mjs";
 
 const router = express.Router();
 
-// Add a new feedback
+// Add a new review
 router.post("/", async (req, res) => {
   const { 
     userId,
     beerId,
-    feedback
+    review
   } = req.body;
 
-  const newFeedback = new Feedback();
   const objId = new ObjectId();
-
-  newFeedback._id = objId;
-  newFeedback.userId = userId;
-  newFeedback.beerId = beerId;
-  newFeedback.feedback = feedback;
-  newFeedback.createDate = new Date();
+  const newReview = new Review();
+  
+  newReview._id = objId;
+  newReview.userId = userId;
+  newReview.beerId = beerId;
+  newReview.review = review;
+  newReview.createDate = new Date();
 
   try {
-    const result = await newFeedback.save();
+    const result = await newReview.save();
     console.log(result);
     res.status(201).send(result);
   } catch (error) {
