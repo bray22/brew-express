@@ -16,7 +16,7 @@ class Feedback extends Component<{}, State> {
     this.state = {
       feedback: '',
       userId: '65011a637a142ea37d473d64',
-      beerId: '653d547bfc232964944010d9',
+      beerId: '',
       error: null,
     };
   }
@@ -64,7 +64,7 @@ class Feedback extends Component<{}, State> {
           <div className="username">
             <div>beer</div>
             <div>
-              {beerId}
+              {/* {beerId} */}
             </div>
           </div>
           <div className="username">

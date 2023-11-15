@@ -4,25 +4,35 @@ import Favorites from "../models/Favorites.mjs";
 
 const router = express.Router();
 
-// Add a favorite
-router.post("/", async (req, res) => {
-  const { 
-    userId, 
-    beerId,
-  } = req.body;
-
-  const newFavorite = new Favorites();
-  const objId = new ObjectId();
-
-  newFavorite._id = objId;
-  newFavorite.userId = userId;
-  newFavorite.beerId = beerId;
-  newFavorite.createDate = new Date();
+// Add or update a favorite
+router.put("/", async (req, res) => {
+  const { userId, beerId, favorite } = req.body;
 
   try {
-    const result = await newFavorite.save();
-    console.log(result);
-    res.status(201).send(result);
+    // Check if a record with the given userId and beerId already exists
+    const existingFavorite = await Favorites.findOne({ userId, beerId });
+
+    if (existingFavorite) {
+      // Update the existing record
+      existingFavorite.favorite = favorite;
+      existingFavorite.createDate = new Date();
+
+      const updatedResult = await existingFavorite.save();
+      console.log(updatedResult);
+      res.status(200).json(updatedResult);
+    } else {
+      // Create a new favorite
+      const newFavorite = new Favorites({
+        userId,
+        beerId,
+        favorite,
+        createDate: new Date(),
+      });
+
+      const result = await newFavorite.save();
+      console.log(result);
+      res.status(201).json(result);
+    }
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

@@ -5,6 +5,7 @@ const favoritesSchema = new mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
   userId: String,
   beerId: String,
+  favorite: Boolean,
   createDate: Date
 });
 

@@ -7,7 +7,7 @@ const server_name = 'http://localhost:8080';
 interface State {
   userId: string;
   beerId: string;
-  isFavorite: boolean;
+  favorite: boolean;
   error: any;
 }
 
@@ -17,60 +17,38 @@ class Favorites extends Component<{}, State> {
     this.state = {
       userId: '65011a637a142ea37d473d64',
       beerId: '653d547bfc232964944010d9',
-      isFavorite: false,
+      favorite: false,
       error: null,
     };
   }
 
   handleFavorite = () => {
-    const { userId, beerId, isFavorite } = this.state;
+    const { userId, beerId, favorite } = this.state;
 
     console.log(userId);
     console.log(beerId);
-    console.log(isFavorite);
-    if (isFavorite) {
-    axios
-      .post(`http://localhost:8080/favorites`, {
-         userId,
-         beerId,
-         isFavorite,
-       })
-       .then((response) => {
-         console.log(response.data);
-       })
-       .catch((error) => {
-         console.log(error);
-       });
-    } else {
-      axios
-        .delete(`http://localhost:8080/favorites/${userId}/${beerId}`)
-        .then((response) => {
-          console.log(response.data);
-        })
-        .catch((error) => {
-          console.log(error);
-      });
+    console.log(favorite);
 
-      axios
-      .delete(`$http://localhost:8080/favorites/${userId}/${beerId}`)
+    axios
+    .put(`http://localhost:8080/favorites`, {
+        userId,
+        beerId,
+        favorite,
+      })
       .then((response) => {
         console.log(response.data);
-        // Handle success, update UI or state if needed
       })
       .catch((error) => {
         console.log(error);
-        // Handle error, show error message or update state if needed
       });
-
-    }
   };
 
   handleFavoriteChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ isFavorite: event.target.checked });
+    this.setState({ favorite: event.target.checked });
   };
 
   render() {
-    const { userId, beerId, isFavorite } = this.state;
+    const { userId, beerId, favorite } = this.state;
     return (
       <>
         {/* new user */}
@@ -93,7 +71,7 @@ class Favorites extends Component<{}, State> {
               <input
                 type="checkbox"
                 name="favorite"
-                checked={this.state.isFavorite}
+                checked={favorite}
                 onChange={this.handleFavoriteChange}
               />
             </div>
