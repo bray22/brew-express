@@ -4,6 +4,24 @@ import Favorites from "../models/Favorites.mjs";
 
 const router = express.Router();
 
+// Get a single post
+router.get("/:userId/:beerId", async (req, res) => {
+  const { userId, beerId } = req.params;
+
+  try {
+    const result = await Favorites.findOne({ userId, beerId });
+ 
+    if (result.length) {
+      res.status(200).json({ success: true, message: 'Favorite retrieved' });
+    } else {
+      res.status(404).json({ success: false, message: 'Favorite not found' });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
 // Add or update a favorite
 router.put("/", async (req, res) => {
   const { userId, beerId, favorite } = req.body;
