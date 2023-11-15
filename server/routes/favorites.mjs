@@ -11,6 +11,7 @@ router.get("/:userId/:beerId", async (req, res) => {
     const result = await Favorites.findOne({ userId, beerId });
 
     if (result) {
+      console.log(result);
       // If a result is found (not null), it means the favorite exists
       res.status(200).json({ success: true, message: 'Favorite retrieved', favorite: result.favorite });
     } else {
@@ -43,7 +44,9 @@ router.put("/", async (req, res) => {
       res.status(200).json(updatedResult);
     } else {
       // Create a new favorite
+      const objId = new ObjectId();
       const newFavorite = new Favorites({
+        _id: objId,
         userId,
         beerId,
         favorite,
