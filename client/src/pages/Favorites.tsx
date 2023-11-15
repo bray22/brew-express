@@ -22,6 +22,18 @@ class Favorites extends Component<{}, State> {
     };
   }
 
+  componentDidMount = () =>{
+    axios
+    .get(`http://localhost:8080/favorites/65011a637a142ea37d473d64/653d547bfc232964944010d9`)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+   
+  }
+
   handleFavorite = () => {
     const { userId, beerId, favorite } = this.state;
 
