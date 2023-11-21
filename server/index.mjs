@@ -29,12 +29,10 @@ const PORT = process.env.PORT || 8080;
 const app = express();
 const authRoute = express.Router();
 
-if (process?.env?.ENVIRONMENT !== "Dev") {
-  const privateKey = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/privkey.pem', 'utf8');
-  const certificate = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/fullchain.pem', 'utf8');
-  const credentials = { key: privateKey, cert: certificate };
-  const httpsServer = https.createServer(credentials, app);
-}
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/fullchain.pem', 'utf8');
+const credentials = { key: privateKey, cert: certificate };
+const httpsServer = https.createServer(credentials, app);
 
 // Configure Passport to use the LocalStrategy for authentication
 passport.use(
@@ -110,8 +108,6 @@ app.all('*', (req, res) => {
   res.status(404).send('Oops! The page you requested does not exist.');
 });
 
-if (process?.env?.ENVIRONMENT !== "Dev") {
-  httpsServer.listen(https_port, () => {
-    console.log(`Server is running on https://www.raystar.io:${https_port}`);
-  });
-}
+httpsServer.listen(https_port, () => {
+  console.log(`Server is running on https://www.raystar.io:${https_port}`);
+});
