@@ -9,9 +9,8 @@ import axios from 'axios';
 import Feedback from './pages/Feedback';
 import Reviews from './pages/Reviews';
 import Favorites from './pages/Favorites';
-
-//const root = ReactDOM.createRoot(document.getElementById('root'));
-
+import Sessions from './pages/Sessions';
+import Recents from './pages/Recents';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -42,6 +41,8 @@ function App() {
         <Route path="/posts" index element={<Feedback />} />
         <Route path="/favorites" index element={<Favorites />} />
         <Route path="/reviews" index element={<Reviews />} />
+        <Route path="/sessions" index element={<Sessions />} />
+        <Route path="/recents" index element={<Recents />} />
       </Routes>
     </BrowserRouter>
     </>

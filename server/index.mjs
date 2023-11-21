@@ -9,6 +9,8 @@ import users from './routes/users.mjs';
 import posts from './routes/posts.mjs';
 import favorites from './routes/favorites.mjs';
 import reviews from './routes/reviews.mjs';
+import sessions from './routes/sessions.mjs';
+import recents from './routes/recents.mjs';
 import fs from 'fs';
 import https from 'https';
 import auth from './routes/auth.mjs';
@@ -27,10 +29,12 @@ const PORT = process.env.PORT || 8080;
 const app = express();
 const authRoute = express.Router();
 
-const privateKey = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/privkey.pem', 'utf8');
-const certificate = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/fullchain.pem', 'utf8');
-const credentials = { key: privateKey, cert: certificate };
-const httpsServer = https.createServer(credentials, app);
+if (process?.env?.ENVIRONMENT !== "Dev") {
+  const privateKey = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/privkey.pem', 'utf8');
+  const certificate = fs.readFileSync('/etc/letsencrypt/live/www.raystar.io/fullchain.pem', 'utf8');
+  const credentials = { key: privateKey, cert: certificate };
+  const httpsServer = https.createServer(credentials, app);
+}
 
 // Configure Passport to use the LocalStrategy for authentication
 passport.use(
@@ -83,6 +87,8 @@ app.use('/login', login);
 app.use('/posts', posts);
 app.use('/favorites', favorites);
 app.use('/reviews', reviews);
+app.use('/sessions', sessions);
+app.use('/recents', recents);
 
 app.get('/status.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'status.html' ));
