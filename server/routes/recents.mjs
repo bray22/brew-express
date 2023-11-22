@@ -54,8 +54,8 @@ router.post("/", async (req, res) => {
     sessionId
   } = req.body;
 
-  const response = await axios.get(`${server_name}/recents/${beer._id}/${sessionId}`);
-  if (!response.data) {
+  const existingRecents = await Recent.findOne({ sessionId, beerId });
+  if (!existingRecents) {
     try {
       const newRecent = new Recent();
       newRecent._id = new ObjectId();
