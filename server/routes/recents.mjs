@@ -54,8 +54,8 @@ router.post("/", async (req, res) => {
     sessionId
   } = req.body;
 
-  const existingRecents = await Recent.findOne({ sessionId, beerId });
-  if (!existingRecents) {
+  //const existingRecents = await Recent.findOne({ sessionId, beerId });
+  //if (!existingRecents) {
     try {
       const newRecent = new Recent();
       newRecent._id = new ObjectId();
@@ -69,9 +69,9 @@ router.post("/", async (req, res) => {
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
-  } else {
-    console.log("Beer already exists in recents");
-  }
+  //} else {
+   // console.log("Beer already exists in recents");
+  //}
 });
 
 // Delete a user by ID
