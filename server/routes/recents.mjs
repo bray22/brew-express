@@ -54,18 +54,23 @@ router.post("/", async (req, res) => {
     sessionId
   } = req.body;
 
-  try {
-    const newRecent = new Recent();
-    newRecent._id = new ObjectId();
-    newRecent.userId = userId;
-    newRecent.beerId = beerId;
-    newRecent.sessionId = sessionId;
-    newRecent.createDate = new Date();
+  const response = await axios.get(`${server_name}/recents/${beer._id}/${sessionId}`);
+  if (!response.data) {
+    try {
+      const newRecent = new Recent();
+      newRecent._id = new ObjectId();
+      newRecent.userId = userId;
+      newRecent.beerId = beerId;
+      newRecent.sessionId = sessionId;
+      newRecent.createDate = new Date();
 
-    const result = await newRecent.save();
-    res.status(201).send(result);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
+      const result = await newRecent.save();
+      res.status(201).send(result);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  } else {
+    console.log("Beer already exists in recents");
   }
 });
 
