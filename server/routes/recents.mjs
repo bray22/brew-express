@@ -33,9 +33,8 @@ router.get("/:sessionId", async (req, res) => {
     const result = await Recent.find({ sessionId });
 
     if (result) {
-      console.log(result);
       // If a result is found (not null), it means the favorite exists
-      res.status(200).json({ success: true, message: 'Recent viewed retrieved', favorite: result.favorite });
+      res.send(result).status(200);
     } else {
       // If no result is found, it means the favorite does not exist
       res.status(404).json({ success: false, message: 'Recent viewed not found', favorite: false });
