@@ -5,6 +5,27 @@ import Recent from "../models/Recent.mjs";
 const router = express.Router();
 
 // Get recent beers by user ID, session ID
+router.get("/:sessionId/:beerId", async (req, res) => {
+  const { sessionId, beerId } = req.params;
+
+  try {
+    const result = await Recent.findOne({ sessionId, beerId });
+
+    if (result) {
+      console.log(result);
+      // If a result is found (not null), it means the favorite exists
+      res.status(200).json({ success: true, message: 'Recent viewed retrieved', favorite: result.favorite });
+    } else {
+      // If no result is found, it means the favorite does not exist
+      res.status(404).json({ success: false, message: 'Recent viewed not found', favorite: false });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: 'Internal Server Error', favorite: false });
+  }
+});
+
+// Get recent beers by user ID, session ID
 router.get("/:sessionId", async (req, res) => {
   const { userId, sessionId } = req.params;
 
