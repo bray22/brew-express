@@ -5,7 +5,8 @@ const sessionSchema = new mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
   country: String,
   zip: String,
-  userId: String
+  userId: String,
+  createDate: Date
 });
 
 // Create the session model

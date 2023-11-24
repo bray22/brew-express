@@ -6,6 +6,7 @@ const recentSchema = new mongoose.Schema({
   beerId: String,
   userId: String,
   sessionId: String,
+  createDate: Date
 });
 
 // Create the recent model
