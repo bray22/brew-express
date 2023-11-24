@@ -113,6 +113,27 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.post('/getBeersByIds', async (req, res) => {
+  try {
+    const { beerIds } = req.body;
+
+    // Check if beerIds is an array
+    if (!Array.isArray(beerIds)) {
+      return res.status(400).json({ error: 'beerIds must be an array' });
+    }
+
+    // Convert beerIds to ObjectId
+    const objectIdArray = beerIds.map(id => new ObjectId(id));
+
+    // Fetch beers by their IDs
+    const results = await Beer.find({ _id: { $in: objectIdArray } }).populate('brewerId');
+
+    res.status(200).json(results);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // case-insensitive regex
 router.post("/search", async (req, res) => {
   try {
