@@ -34,7 +34,7 @@ router.post("/newUser", async (req, res) => {
       const newUser = new User({
         _id: objId,
         username: username,
-        password: hashedPassword,
+        password: password,
         firstName: firstName,
         lastName: lastName,
         email: email,
