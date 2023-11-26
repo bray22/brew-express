@@ -9,7 +9,9 @@ const router = express.Router();
 
 // new user
 router.post("/newUser", async (req, res) => {
+  
   const {
+   
     username,
     password,
     //firstName,
@@ -30,8 +32,11 @@ router.post("/newUser", async (req, res) => {
       // Hash the password before saving it
      // const hashedPassword = await bcrypt.hash(password, 10);
 
+      const objId = new ObjectId();
+      
       // Create a new user instance
       const newUser = new User({
+        _id: objId,
         username,
         password,
         //firstName,
