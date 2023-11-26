@@ -12,11 +12,11 @@ router.post("/newUser", async (req, res) => {
   const {
     username,
     password,
-    firstName,
-    lastName,
-    email,
-    createDate,
-    updateDate,
+    //firstName,
+    //lastName,
+    //email,
+    //createDate,
+   // updateDate,
   } = req.body;
 
   try {
@@ -28,17 +28,17 @@ router.post("/newUser", async (req, res) => {
       res.status(409).send("Username already exists");
     } else {
       // Hash the password before saving it
-      const hashedPassword = await bcrypt.hash(password, 10);
+     // const hashedPassword = await bcrypt.hash(password, 10);
 
       // Create a new user instance
       const newUser = new User({
         username,
-        password: hashedPassword,
-        firstName,
-        lastName,
-        email,
-        createDate,
-        updateDate,
+        password,
+        //firstName,
+       // lastName,
+       // email,
+       // createDate,
+       // updateDate,
       });
 
       // Save the new user to the database
