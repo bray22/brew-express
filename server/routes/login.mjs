@@ -65,9 +65,9 @@ router.post("/", async (req, res) => {
 
   try {
     // Replace 'User' with the actual User model in your application
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username, password });
 
-    if (user && bcrypt.compareSync(password, user.password)) {
+    if (user) {
       const returnUser = {
         userId: user._id,
         username: user.username,
