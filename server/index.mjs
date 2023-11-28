@@ -70,6 +70,14 @@ app.use(
   })
 );
 
+// Serve static files (e.g., HTML, CSS, images) from the "public" directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Set up a route to serve the main HTML file
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'terms.html'));
+});
+
 // Middlewares
 app.use(cors());
 app.use(express.json());
@@ -109,5 +117,5 @@ app.all('*', (req, res) => {
 });
 
 httpsServer.listen(https_port, () => {
-  console.log(`Server is running on https://www.raystar.io:${https_port}`);
+   console.log(`Server is running on https://www.raystar.io:${https_port}`);
 });
